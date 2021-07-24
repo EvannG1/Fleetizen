@@ -1,0 +1,20 @@
+body {
+    background-color: #e4e5e6;
+}
+
+.card {
+    border: 1px solid #c8ced3;
+    border-radius: .25rem;
+}
+
+.card-header {
+    padding: 15px
+}
+
+.modal-footer {
+    justify-content: flex-start;
+}
+
+.edit-ship {
+    cursor: pointer;
+}
