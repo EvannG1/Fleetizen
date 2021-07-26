@@ -9,8 +9,8 @@
                             <h4>My fleet</h4>
                         </div>
                         <div class="col-12 col-md-4 d-flex justify-content-end">
-                            <button class="btn btn-primary"><i class="fas fa-plus"></i> Add ship</button>&nbsp;
-                            <button class="btn btn-danger"><i class="fas fa-trash"></i> Clear my fleet</button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addShipModal"><i class="fas fa-plus"></i> Add ship</button>&nbsp;
+                            <button @click="getIds" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteShipModal"><i class="fas fa-trash"></i> Clear my fleet</button>
                         </div>
                     </div>
                 </div>
@@ -22,27 +22,35 @@
                         </div>
                     </form>
                     <div class="row">
-                        <div v-for="ship in filteredList" :key="ship.id" class="col-12 col-md-6 col-lg-3">
+                        <div v-for="ship in filteredList" :key="ship.id" class="col-12 col-md-6 col-xl-4">
                             <ShipCard :id="ship._id" :uuid="ship._uuid" :name="ship.name" :quantity="ship.quantity" :image="ship.image" />
                         </div>
                     </div>
                 </div>
             </div>
 
+            <AddShip />
+            <ClearFleet :ids="ships_ids" />
+
         </div>
     </div>
 </template>
 
 <script>
-import ShipCard from '../components/ShipCard.vue';
+import ShipCard from '../components/MyFleet/ShipCard.vue';
+import AddShip from '../components/MyFleet/Modals/AddShip.vue';
+import ClearFleet from '../components/MyFleet/Modals/ClearFleet.vue';
 
 export default {
     components: {
-        ShipCard
+        ShipCard,
+        AddShip,
+        ClearFleet
     },
     data() {
         return {
             ships: [],
+            ships_ids: [],
             searchBar: ''
         }
     },
@@ -54,11 +62,23 @@ export default {
         }
     },
     mounted() {
-        api.get('ships').then(response => {
-            response.data.forEach(element => {
-                this.ships.push(element);
+        this.getData();
+    },
+    created() {
+        this.$root.$refs.MyFleet = this;
+    },
+    methods: {
+        getData() {
+            this.ships = [];
+            api.get('ships').then(response => {
+                response.data.forEach(element => {
+                    this.ships.push(element);
+                });
             });
-        });
+        },
+        getIds() {
+            this.ships.forEach(ship => this.ships_ids.push(ship._id));
+        }
     }
 }
 </script>
